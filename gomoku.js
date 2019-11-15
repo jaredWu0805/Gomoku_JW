@@ -20,12 +20,13 @@ for (let i = 0; i < 15; i++) {
 }
 
 //Draw GoBoard
-const texture = new Image();
-texture.src = 'wood.jpg';
-texture.onload = () => {
- background.drawImage(texture, 0, 0
-    , 450, 450);
-    drawGoBoard();
+function draw(){
+    const texture = new Image();
+    texture.src = 'wood.jpg';
+    texture.onload = () => {
+        background.drawImage(texture, 0, 0, 450, 450);
+        drawGoBoard();
+    }
 }
 
 function drawGoBoard() {
@@ -44,6 +45,7 @@ function drawGoBoard() {
 //Detect 
 //mouse click and draw stone
 let turn = 1;
+let gameEnds = 0;
 document.getElementById('board').addEventListener("click",placeStone)
 
 function placeStone(event) {
@@ -86,10 +88,8 @@ function drawStone(turn, i, j){
         else {
             background.drawImage(blackStone, 0 + i*30, 0 + j*30, 30, 30);
         }
-}
 
-
-let gameEnds = 0;
+    }
 
 function checkWin(turn, i, j){
     
@@ -134,35 +134,58 @@ function checkWin(turn, i, j){
         }
         else {break;}
     }
+
     //check left slash
     for (let x = i, y = j; x >= 0 && y < 15; x--, y++){
         if (GoBoard[x][y] == turn){  
-            console.log('1');
             lft_slash_cnt++;
-            console.log(lft_slash_cnt);
         }
         else {break;}
     }
     for (let x = i+1, y = j-1; x < 15 && y >= 0; x++, y--){
         if (GoBoard[x][y] == turn){  
-            console.log('2');
             lft_slash_cnt++;
-            console.log(lft_slash_cnt);
         }
         else {break;}
     }    
-    
     
     if ( row_count == 5 || column_count == 5 || 
         rgt_slash_cnt == 5 || lft_slash_cnt == 5){
         gameEnds = 1;
         if (turn == 1){
-            alert('White Win!');
+            window.setTimeout(WhiteWin,0);
         }
         else { 
-            alert('Black Win!');
+            window.setTimeout(BlackWin,0);
         };
-    }
-    
-         
+    } 
 }
+
+function WhiteWin(){
+    var str = "White Wins!";
+    var result = str.fontcolor('red');
+    msg.innerHTML = result;
+}
+function BlackWin(){
+    var str = "Black Wins!";
+    var result = str.fontcolor('red');
+    msg.innerHTML = result;
+}
+
+//Start Over Button
+function startOver(){
+    turn = 1;
+    gameEnds = 0;
+    msg.innerHTML = "White Start";
+
+    //Initate GoBoard
+    for (let i = 0; i < 15; i++) {
+        GoBoard[i] = [];
+        for (let j = 0; j < 15; j++) {
+            GoBoard[i][j] = 0;
+        }
+    }
+    //re-draw GoBoard
+    draw()
+}
+draw()
